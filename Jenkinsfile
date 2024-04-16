@@ -4,7 +4,7 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                git branch: 'main', credentialsId: 'git-credentials-id', url: 'https://github.com/your-repo.git'
+                git branch: 'main', credentialsId: 'Jenkins_git', url: 'https://github.com/IftachZilcaPaz/final_proj_git_jenkins'
             }
         }
         stage('Build Docker Image') {
