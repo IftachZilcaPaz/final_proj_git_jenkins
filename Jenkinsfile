@@ -12,7 +12,7 @@ pipeline {
             steps {
                 script {
                     // Check if the namespace exists
-                    sh "kubectl get namespace jenkins || kubectl create namespace jenkins"
+                    kubernetesDeploy(kubeconfigId: 'kube2', command: 'get namespace jenkins || kubectl create namespace jenkins')
                 }
             }
         }
