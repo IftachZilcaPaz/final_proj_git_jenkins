@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: myhtmlapp
+  namespace: jenkins
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: myhtmlapp
+  template:
+    metadata:
+      labels:
+        app: myhtmlapp
+    spec:
+      containers:
+      - name: myhtmlapp
+        image: iftachzilka7/myhtmlapp:${BUILD_ID} # Replace with your image
+        ports:
+        - containerPort: 80
