@@ -35,7 +35,31 @@ pipeline {
                 }
             }
         }
+
+        // Stage for pulling the latest Docker image
+        stage('Pull Image') {
+            steps {
+                script {
+                    // Pulling the latest image from Docker Hub
+                    sh 'docker pull iftachzilka7/myhtmlapp:latest'
+                }
+            }
+        }
+
+        // Stage for running the Docker image
+        stage('Run Image') {
+            steps {
+                script {
+                    // Running the Docker image
+                    sh 'docker run -d -p 80:80 iftachzilka7/myhtmlapp:latest'
+                }
+            }
+        }
     }
 
-    
+    post {
+        always {
+            cleanWs()
+        }
+    }
 }
