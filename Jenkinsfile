@@ -46,12 +46,22 @@ pipeline {
             }
         }
 
+        // Stage for stopping and removing any existing Docker containers
+        stage('Cleanup Old Containers') {
+            steps {
+                script {
+                    // Stop and remove any containers from previous builds
+                    sh 'docker ps -aq --filter "name=myhtmlapp" | xargs -r docker stop | xargs -r docker rm'
+                }
+            }
+        }
+
         // Stage for running the Docker image
         stage('Run Image') {
             steps {
                 script {
                     // Running the Docker image
-                    sh 'docker run -d -p 80:80 iftachzilka7/myhtmlapp:latest'
+                    sh 'docker run -d --name myhtmlapp -p 80:80 iftachzilka7/myhtmlapp:latest'
                 }
             }
         }
