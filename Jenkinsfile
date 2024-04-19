@@ -69,11 +69,12 @@ pipeline {
         stage('Deploy to Kubernetes') {
             steps {
                 script {
-                    withCredentials([file(credentialsId: 'kube', variable: 'KUBE_TOKEN')]) {
-                        // Assuming the kubeconfig is set up on Jenkins agents
-                        sh 'kubectl config set-credentials jenkins-sa --token=$(cat $KUBE_TOKEN)'
-                        sh 'kubectl config set-context --current --user=jenkins-sa'
-                        sh "kubectl apply -f k8s/deployment.yaml --namespace=jenkins"
+                    // Inject the secret text into a variable
+                    withCredentials([string(credentialsId: 'kube', variable: 'KUBECONFIG_CONTENT')]) {
+                        // Write the content to a kubeconfig file
+                        sh "echo \"${KUBECONFIG_CONTENT}\" > ./kubeconfig"
+                        // Use the kubeconfig file with kubectl
+                        sh "kubectl apply -f k8s/deployment.yaml --kubeconfig=./kubeconfig"
                     }
                 }
             }
