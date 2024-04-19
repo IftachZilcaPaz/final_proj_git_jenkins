@@ -19,14 +19,22 @@ pipeline {
         stage('Clean Docker Environment') {
             steps {
                 script {
-                    // Stop all running Docker containers
-                    sh "docker stop \$(docker ps -aq)"
-                    
-                    // Remove all Docker containers
-                    sh "docker rm \$(docker ps -aq)"
-                    
-                    // Remove all Docker images
-                    sh "docker rmi -f \$(docker images -aq)"
+                    // Check if there are any containers, and stop them if there are
+            def runningContainers = sh(script: "docker ps -q", returnStdout: true).trim()
+            if (runningContainers) {
+                sh "docker stop ${runningContainers}"
+            }
+            
+            // Check if there are any containers, and remove them if there are
+            def allContainers = sh(script: "docker ps -aq", returnStdout: true).trim()
+            if (allContainers) {
+                sh "docker rm ${allContainers}"
+            }
+            
+            // Check if there are any images, and remove them if there are
+            def allImages = sh(script: "docker images -q", returnStdout: true).trim()
+            if (allImages) {
+                sh "docker rmi -f ${allImages}"
                 }
             }
         }
