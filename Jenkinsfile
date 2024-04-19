@@ -38,7 +38,7 @@ pipeline {
             steps {
                 script {
                     withCredentials([string(credentialsId: 'kube', variable: 'KUBE_TOKEN')]) {
-                        sh "echo ${KUBE_TOKEN} | kubectl apply -f k8s/deployment.yaml --token-stdin"
+                        sh "echo ${KUBE_TOKEN} | kubectl apply -f k8s/deployment.yaml"
                     }
                 }
             }
