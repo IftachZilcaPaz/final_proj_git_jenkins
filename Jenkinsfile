@@ -69,12 +69,12 @@ pipeline {
         stage('Deploy to Kubernetes') {
             steps {
                 script {
-                    // Inject the secret text into a variable
                     withCredentials([string(credentialsId: 'kube', variable: 'KUBECONFIG_CONTENT')]) {
-                        // Write the content to a kubeconfig file
-                        sh "echo \"${KUBECONFIG_CONTENT}\" > ./kubeconfig"
-                        // Use the kubeconfig file with kubectl
-                        sh "kubectl apply -f k8s/deployment.yaml --kubeconfig=./kubeconfig"
+                        // Use the writeFile step to securely write the content to a file
+                        writeFile file: 'kubeconfig', text: KUBECONFIG_CONTENT
+                        
+                        // Now you can use the kubeconfig file with kubectl
+                        sh "kubectl apply -f k8s/deployment.yaml --kubeconfig=kubeconfig"
                     }
                 }
             }
