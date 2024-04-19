@@ -8,6 +8,7 @@ pipeline {
     }
 
     stages {
+
         stage('Checkout') {
             steps {
                 git branch: 'main', 
@@ -41,9 +42,8 @@ pipeline {
                     kubernetesDeploy configs: 'deployment.yaml', kubeconfigId: 'kube2'
                 }
             }
+        }
     }
-    }
-    
 
     post {
         always {
