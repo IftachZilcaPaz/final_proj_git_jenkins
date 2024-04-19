@@ -4,17 +4,15 @@ pipeline {
         stage('Build') {
             steps {
                 script {
-                    // Example of building a Docker image
-                    def dockerImage = docker.build("my-image:${env.BUILD_ID}")
+                    docker.build("my-app:${env.BUILD_ID}")
                 }
             }
         }
         stage('Test') {
             steps {
                 script {
-                    // Example of running a Docker container
-                    dockerImage.inside {
-                        sh 'echo "Running tests inside Docker"'
+                    docker.image("my-app:${env.BUILD_ID}").inside {
+                        sh 'echo Running tests inside Docker'
                     }
                 }
             }
