@@ -73,6 +73,8 @@ pipeline {
                         sh "kubectl apply -f deployment.yaml --token=\${KUBE_TOKEN} --validate=false"
                 }
             }
+        }
+    }
     }
 
     post {
