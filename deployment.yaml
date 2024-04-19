@@ -18,3 +18,18 @@ spec:
         image: iftachzilka7/myhtmlapp:${BUILD_ID} # Replace with your image
         ports:
         - containerPort: 80
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: myhtmlapp-service
+  namespace: jenkins
+spec:
+  selector:
+    app: myhtmlapp
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 80
+  type: NodePort
