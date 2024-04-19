@@ -65,9 +65,6 @@ pipeline {
                 }
             }
         }
-        stages {
-        // ... existing stages ...
-
         // Add a deployment stage
         stage('Deploy to Kubernetes') {
             steps {
