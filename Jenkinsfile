@@ -37,10 +37,5 @@ pipeline {
         }
     }
 
-    post {
-        // Cleanup workspace after the pipeline runs
-        always {
-            cleanWs()
-        }
-    }
+    
 }
