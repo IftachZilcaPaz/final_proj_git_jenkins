@@ -43,7 +43,6 @@ pipeline {
             }
             steps {
                 script {
-                    withCredentials([string(credentialsId: 'kube-token', variable: 'KUBE_TOKEN')]) {
                         // Dynamically create the deployment.yaml
                         sh """
                         cat <<EOF > deployment.yaml
@@ -70,12 +69,12 @@ pipeline {
                         EOF
                         """
                         // Apply the deployment
-                        sh "kubectl apply -f deployment.yaml --token=\${KUBE_TOKEN} --validate=false"
+                        sh "kubectl apply -f deployment.yaml --validate=false"
                 }
             }
         }
     }
-    }
+    
 
     post {
         always {
