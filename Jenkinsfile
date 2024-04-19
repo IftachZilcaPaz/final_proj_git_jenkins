@@ -37,7 +37,7 @@ pipeline {
         stage('Deploy to Kubernetes') {
             steps {
                 script {
-                    withCredentials([string(credentialsId: 'jenkins-kube-token', variable: 'KUBE_TOKEN')]) {
+                    withCredentials([string(credentialsId: 'kube', variable: 'KUBE_TOKEN')]) {
                         sh "echo ${KUBE_TOKEN} | kubectl apply -f k8s/deployment.yaml --token-stdin"
                     }
                 }
