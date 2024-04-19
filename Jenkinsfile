@@ -69,12 +69,16 @@ pipeline {
         stage('Deploy to Kubernetes') {
             steps {
                 script {
+                    // Temporarily write the kubeconfig file content to disk
                     withCredentials([string(credentialsId: 'kube', variable: 'KUBECONFIG_CONTENT')]) {
-                        // Use the writeFile step to securely write the content to a file
+                        // Use the writeFile step to write the secret content to a file
                         writeFile file: 'kubeconfig', text: KUBECONFIG_CONTENT
                         
-                        // Now you can use the kubeconfig file with kubectl
-                        sh "kubectl apply -f k8s/deployment.yaml --kubeconfig=kubeconfig"
+                        // Try echoing something else to check if the file is written correctly
+                        sh 'echo "Check kubeconfig file" && cat kubeconfig'
+                        
+                        // Apply the Kubernetes manifest using the kubeconfig
+                        sh "kubectl apply -f k8s/deployment.yaml --kubeconfig=./kubeconfig"
                     }
                 }
             }
