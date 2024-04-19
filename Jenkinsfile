@@ -8,6 +8,14 @@ pipeline {
     }
 
     stages {
+        stage('Create Namespace') {
+            steps {
+                script {
+                    // Check if the namespace exists
+                    sh "kubectl get namespace jenkins || kubectl create namespace jenkins"
+                }
+            }
+        }
 
         stage('Checkout') {
             steps {
