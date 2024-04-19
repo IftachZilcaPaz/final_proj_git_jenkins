@@ -65,6 +65,22 @@ pipeline {
                 }
             }
         }
+        stages {
+        // ... existing stages ...
+
+        // Add a deployment stage
+        stage('Deploy to Kubernetes') {
+            steps {
+                script {
+                    withCredentials([file(credentialsId: 'kube', variable: 'KUBE_TOKEN')]) {
+                        // Assuming the kubeconfig is set up on Jenkins agents
+                        sh 'kubectl config set-credentials jenkins-sa --token=$(cat $KUBE_TOKEN)'
+                        sh 'kubectl config set-context --current --user=jenkins-sa'
+                        sh "kubectl apply -f k8s/deployment.yaml --namespace=jenkins"
+                    }
+                }
+            }
+        }
     }
 
     post {
