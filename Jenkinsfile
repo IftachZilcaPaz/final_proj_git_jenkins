@@ -17,9 +17,9 @@ pipeline {
         }
 
         stage('Clean Docker Environment') {
-            steps {
-                script {
-                    // Check if there are any containers, and stop them if there are
+    steps {
+        script {
+            // Check if there are any containers, and stop them if there are
             def runningContainers = sh(script: "docker ps -q", returnStdout: true).trim()
             if (runningContainers) {
                 sh "docker stop ${runningContainers}"
@@ -35,9 +35,10 @@ pipeline {
             def allImages = sh(script: "docker images -q", returnStdout: true).trim()
             if (allImages) {
                 sh "docker rmi -f ${allImages}"
-                }
             }
         }
+    }
+}
 
         stage('Build Docker Image') {
             steps {
