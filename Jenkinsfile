@@ -4,6 +4,7 @@ pipeline {
     environment {
         // Define the image name here for reuse in the pipeline
         IMAGE_NAME = "iftachzilka7/myhtmlapp:${env.BUILD_ID}"
+        KUBECONFIG = '/home/ubuntu/.kube/config'
     }
 
     stages {
@@ -37,8 +38,15 @@ pipeline {
         stage('Deploy to Kubernetes') {
             agent {
                 kubernetes {
-                    // Specify the particular pod template to use
-                    yaml '''
+                     label 'jenkins-slave'
+                }
+            }
+            steps {
+                script {
+                    withCredentials([string(credentialsId: 'kube-token', variable: 'KUBE_TOKEN')]) {
+                        // Dynamically create the deployment.yaml
+                        sh """
+                        cat <<EOF > deployment.yaml
                         apiVersion: apps/v1
                         kind: Deployment
                         metadata:
@@ -48,7 +56,7 @@ pipeline {
                           replicas: 2
                           selector:
                             matchLabels:
-                            app: myhtmlapp
+                              app: myhtmlapp
                           template:
                             metadata:
                               labels:
@@ -56,16 +64,13 @@ pipeline {
                             spec:
                               containers:
                               - name: myhtmlapp
-                                image: iftachzilka7/myhtmlapp:${BUILD_ID} # Replace with your image
+                                image: iftachzilka7/myhtmlapp:\${BUILD_ID} # Replace with your image
                                 ports:
                                 - containerPort: 80
-                        '''        
-                }
-            }
-            steps {
-                script {
-                    // Your deployment commands here
-                    sh 'kubectl apply -f k8s/deployment.yaml --validate=false'
+                        EOF
+                        """
+                        // Apply the deployment
+                        sh "kubectl apply -f deployment.yaml --token=\${KUBE_TOKEN} --validate=false"
                 }
             }
     }
