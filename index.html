@@ -3,40 +3,163 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sample HTML Page</title>
+    <title>Beautiful Static Webpage</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
-            margin: 40px;
-            background-color: #f4f4f9;
-        }
-        h1 {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            line-height: 1.6;
             color: #333;
+            background-color: #f4f4f4;
         }
-        p {
-            color: #666;
-            font-size: 1.2rem;
+        .navbar {
+            background-color: #333;
+            color: #fff;
+            overflow: hidden;
+            padding: 15px 0;
+            text-align: center;
         }
-        img {
-            max-width: 100%;
-            height: auto;
+        .navbar a {
+            color: #fff;
+            padding: 14px 20px;
+            text-decoration: none;
+            display: inline-block;
         }
-        .container {
-            max-width: 800px;
-            margin: auto;
+        .hero {
+            background-color: #e9ecef;
+            padding: 60px 0;
+            text-align: center;
+        }
+        .hero h1 {
+            margin: 0;
+            font-size: 40px;
+        }
+        .features {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            padding: 20px;
+        }
+        .feature-box {
             background: white;
             padding: 20px;
+            text-align: center;
             border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        .feature-box-link {
+            text-decoration: none; /* Removes underline from links */
+            color: inherit; /* Keeps the text color consistent */
+        }
+        
+        .feature-box-link:hover .feature-box {
+            /* Optional: style for hover effect */
+            background-color: #f0f0f0; /* Example hover effect */
+        }
+        .gallery {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            padding: 20px;
+        }
+        .gallery img {
+            width: 100%;
+            border-radius: 8px;
+            transition: transform 0.3s ease; /* Smooth transition for scaling */
+        }
+        .gallery .images {
+            display: flex;
+            width: 300%; /* Assuming 3 images */
+        }
+
+        .gallery img:hover {
+            transform: scale(1.1); /* Scale up the image to 110% when hovered */
+        }
+        .footer {
+            background-color: #333;
+            color: #fff;
+            text-align: center;
+            padding: 10px 0;
+        }
+
+        .section {
+            margin-bottom: 20px;
+            padding: 10px;
+            background-color: #f0f0f0;
+            border-left: 5px solid #007BFF;
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>Welcome to My Sample Page</h1>
-        <p>This is a sample HTML file to demonstrate a simple webpage that includes an image and some text. You can use this to test your Jenkins CI/CD pipeline and Docker configurations.</p>
-        <img src="https://via.placeholder.com/600x400.png?text=Sample+Image" alt="Sample Image">
-        <p>This image is fetched from an online placeholder image service.</p>
+    <div class="navbar">
+        <a href="#home">Home</a>
+        <a href="#features">Features</a>
+        <a href="#gallery">Gallery</a>
+        <a href="#contact">Contact</a>
+    </div>
+
+    <div class="hero">
+        <h1>Welcome to My Beautiful Page</h1>
+        <p>-- This is an Nginx Webpage from RedHat Host --</p>
+        <p><img src="https://d2908q01vomqb2.cloudfront.net/da4b9237bacccdf19c0760cab7aec4a8359010b0/2023/03/21/Amazon_Linux_Logo_v08_Amazon-Linux-right%E2%80%94full-color-1260x616.png"  alt="Image" height="100px" width="450px"></p>
+    </div>
+
+    <div id="features" class="features">
+        <a href="page1_lin.html" class="feature-box-link">
+            <div class="feature-box">
+                <h3>App 1</h3>
+                <p>Description of Feature 1.</p>
+            </div>
+        </a>
+        <a href="page2_lin.html" class="feature-box-link">
+            <div class="feature-box">
+                <h3>App 2</h3>
+                <p>Description of Feature 2.</p>
+            </div>
+        </a>
+        <a href="page3_lin.html" class="feature-box-link">
+            <div class="feature-box">
+                <h3>App 3</h3>
+                <p>Description of Feature 3.</p>
+            </div>
+        </a>
+    </div>
+
+    <script>
+        function updateFeaturesFromTextFile(filePath) {
+            fetch(filePath)
+                .then(response => response.text())
+                .then(text => {
+                    // Split the text content into lines
+                    const lines = text.split('\n');
+                    // Find all the feature-box paragraphs
+                    const featureDescriptions = document.querySelectorAll('.feature-box p');
+                    
+                    // Loop through each feature description and update its content
+                    featureDescriptions.forEach((description, index) => {
+                        if (index < lines.length) {
+                            description.textContent = lines[index].trim(); // Update the <p> text
+                        }
+                    });
+                })
+                .catch(error => {
+                    console.error('Failed to load file:', error);
+                });
+        }
+    
+        // Call the function with the path to your text file
+        updateFeaturesFromTextFile('redhat_status.txt');
+    </script>
+
+    <div id="gallery" class="gallery">
+        <img src="https://i.pinimg.com/1200x/8f/be/57/8fbe57b4b1120b46388f287e9b1fae0d.jpg" alt="Image 1">
+        <img src="https://wallpapers.com/images/featured/4k-nature-ztbad1qj8vdjqe0p.jpg" alt="Image 2">
+        <img src="https://i.pinimg.com/originals/37/04/b1/3704b10a51e86a806fbd135881505bb0.jpg" alt="Image 3">
+    </div>
+
+    <div class="footer">
+        <p>&copy; 2024 Beautiful Webpage</p>
     </div>
 </body>
 </html>
