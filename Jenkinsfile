@@ -16,6 +16,21 @@ pipeline {
             }
         }
 
+        stage('Clean Docker Environment') {
+            steps {
+                script {
+                    // Stop all running Docker containers
+                    sh "docker stop \$(docker ps -aq)"
+                    
+                    // Remove all Docker containers
+                    sh "docker rm \$(docker ps -aq)"
+                    
+                    // Remove all Docker images
+                    sh "docker rmi -f \$(docker images -aq)"
+                }
+            }
+        }
+
         stage('Build Docker Image') {
             steps {
                 script {
