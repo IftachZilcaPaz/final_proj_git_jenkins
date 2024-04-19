@@ -1,5 +1,5 @@
 pipeline {
-    agent any  // Specifies that this pipeline can run on any available agent
+    agent kubernetes  // Specifies that this pipeline can run on any available agent
 
     stages {
         // Stage for checking out source code from Git
