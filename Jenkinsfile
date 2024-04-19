@@ -8,14 +8,6 @@ pipeline {
     }
 
     stages {
-        stage('Create Namespace') {
-            steps {
-                script {
-                    // Check if the namespace exists
-                    kubernetesDeploy(kubeconfigId: 'kube2', command: 'get namespace jenkins || kubectl create namespace jenkins')
-                }
-            }
-        }
 
         stage('Checkout') {
             steps {
