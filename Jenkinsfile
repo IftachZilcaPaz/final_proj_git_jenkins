@@ -36,43 +36,8 @@ pipeline {
         }
 
         stage('Deploy to Kubernetes') {
-            agent {
-                kubernetes {
-                     label 'jenkins-slave'
-                }
-            }
-            steps {
-                script {
-                        // Dynamically create the deployment.yaml
-                        sh """
-                        cat <<EOF > deployment.yaml
-                        apiVersion: apps/v1
-                        kind: Deployment
-                        metadata:
-                          name: myhtmlapp
-                          namespace: jenkins
-                        spec:
-                          replicas: 2
-                          selector:
-                            matchLabels:
-                              app: myhtmlapp
-                          template:
-                            metadata:
-                              labels:
-                                app: myhtmlapp
-                            spec:
-                              containers:
-                              - name: myhtmlapp
-                                image: iftachzilka7/myhtmlapp:\${BUILD_ID} # Replace with your image
-                                ports:
-                                - containerPort: 80
-                        EOF
-                        """
-                        // Apply the deployment
-                        sh "kubectl apply -f deployment.yaml --validate=false"
-                }
-            }
-        }
+            kubernetesDeploy configs: 'deploymentsvc.yaml', kubeconfigId: 'kubernetes_config'
+    }
     }
     
 
