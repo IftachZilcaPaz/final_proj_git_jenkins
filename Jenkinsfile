@@ -1,6 +1,31 @@
 pipeline {
-    agent any  // Specifies that this pipeline can run on any available agent
-
+    agent {  // Specifies that this pipeline can run on any available agent
+        kubernetes{
+        // Add a deployment stage
+            yaml '''
+                apiVersion: apps/v1
+                kind: Deployment
+                metadata:
+                  name: myhtmlapp
+                  namespace: jenkins
+                spec:
+                  replicas: 2
+                  selector:
+                    matchLabels:
+                      app: myhtmlapp
+                  template:
+                    metadata:
+                      labels:
+                        app: myhtmlapp
+                    spec:
+                      containers:
+                      - name: myhtmlapp
+                        image: iftachzilka7/myhtmlapp:${BUILD_ID} # Replace with your image
+                        ports:
+                        - containerPort: 80
+                '''        
+        }
+}
     stages {
         // Stage for checking out source code from Git
         stage('Checkout') {
@@ -66,32 +91,6 @@ pipeline {
             }
         }
     }
-        kubernetes{
-        // Add a deployment stage
-            yaml '''
-                apiVersion: apps/v1
-                kind: Deployment
-                metadata:
-                  name: myhtmlapp
-                  namespace: jenkins
-                spec:
-                  replicas: 2
-                  selector:
-                    matchLabels:
-                      app: myhtmlapp
-                  template:
-                    metadata:
-                      labels:
-                        app: myhtmlapp
-                    spec:
-                      containers:
-                      - name: myhtmlapp
-                        image: iftachzilka7/myhtmlapp:${BUILD_ID} # Replace with your image
-                        ports:
-                        - containerPort: 80
-                '''        
-        }
-
     post {
         always {
             cleanWs()
