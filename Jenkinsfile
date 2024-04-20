@@ -6,6 +6,7 @@ pipeline {
         IMAGE_NAME = "iftachzilka7/myhtmlapp:${env.BUILD_ID}"
         KUBECONFIG = '/home/ubuntu/.kube/config'
         CLUSTER_NAME = 'monitoring'  // Define the cluster name here
+        DEPLOYMENT_EXISTS = 'false'
     }
 
     stages {
@@ -70,20 +71,26 @@ pipeline {
                     // Check if the deployment already exists
                     def deploymentExists = sh(script: "kubectl get deployment myhtmlapp -n jenkins", returnStatus: true)
                     if (deploymentExists == 0) {
-                        echo "Deployment already exists. Skipping deployment step."
+                        echo "Deployment already exists."
+                        env.DEPLOYMENT_EXISTS = 'true'
                     } else {
-                        echo "Deployment does not exist. Proceeding with deployment."
-                        // Add deployment logic here
+                        echo "Deployment does not exist."
+                        env.DEPLOYMENT_EXISTS = 'false'
                     }
                 }
             }
         }
 
         stage('Deploy to Kubernetes') {
-                steps {
-                    script {
-                        kubernetesDeploy configs: 'deployment.yaml', kubeconfigId: 'kube2'
-                    }
+            when {
+                expression { env.DEPLOYMENT_EXISTS == 'false' }
+            }
+            steps {
+                script {
+                    // Deployment logic here
+                    echo "Deploying application..."
+                    kubernetesDeploy configs: 'deployment.yaml', kubeconfigId: 'kube2'
+                    // Add your kubectl apply or helm upgrade command here
                 }
             }
         }
