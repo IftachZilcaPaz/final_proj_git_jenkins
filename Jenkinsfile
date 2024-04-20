@@ -35,6 +35,12 @@ pipeline {
                 }
             }
         }
+        stage('Create Kind Cluster') {
+            steps {
+                // Create the Kubernetes cluster with Kind
+                sh "kind create cluster --name monitoring --image kindest/node:v1.23.6 --config /home/ubuntu/Prometheus.lesson/kind.yaml"
+            }
+        }
 
         stage('Deploy to Kubernetes') {
             steps {
