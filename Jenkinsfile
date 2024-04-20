@@ -5,6 +5,7 @@ pipeline {
         // Define the image name here for reuse in the pipeline
         IMAGE_NAME = "iftachzilka7/myhtmlapp:${env.BUILD_ID}"
         KUBECONFIG = '/home/ubuntu/.kube/config'
+        CLUSTER_NAME = 'monitoring'  // Define the cluster name here
     }
 
     stages {
@@ -40,13 +41,7 @@ pipeline {
                 script {
                     // Check if the Kind cluster already exists
                     def existingClusters = sh(script: "kind get clusters", returnStdout: true).trim()
-                    if (!existingClusters.tokenize().contains(env.CLUSTER_NAME)) {
-                        // Cluster does not exist, so create it
-                        echo "Cluster named '${env.CLUSTER_NAME}' does not exist. Creating now..."
-                        sh "kind create cluster --name ${env.CLUSTER_NAME} --image kindest/node:v1.23.6 --config /home/ubuntu/Prometheus.lesson/kind.yaml"
-                    } else {
-                        echo "Cluster named '${env.CLUSTER_NAME}' already exists. No action taken."
-                    }
+                    echo "$existingClusters"
                 }
             }
         }
