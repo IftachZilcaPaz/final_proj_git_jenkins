@@ -57,50 +57,9 @@ pipeline {
             steps {
                 script {
                     // This will pause the execution and wait for user input
-                    input message: 'Do you want to proceed?', ok: 'Proceed'
-                }
-            }
-        }
-
-        stage('Add kubeconfig to Jenkins Credentials') {
-            steps {
-                script {
-                    // Read the kubeconfig file
-                    def kubeConfigContent = readFile '/home/ubuntu/.kube/config'
-
-                    // Script to create/update credentials
-                    def createOrUpdateCredentials = """
-                        import com.cloudbees.plugins.credentials.CredentialsScope
-                        import com.cloudbees.plugins.credentials.domains.Domain
-                        import org.jenkinsci.plugins.plaincredentials.impl.StringCredentialsImpl
-                        import com.cloudbees.plugins.credentials.CredentialsProvider
-                        import com.cloudbees.plugins.credentials.domains.DomainSpecification
-
-                        def credsId = 'kubeconfig'
-                        def credsDescription = 'Kubernetes config file'
-                        def existingCreds = com.cloudbees.plugins.credentials.CredentialsProvider.lookupCredentials(
-                            com.cloudbees.plugins.credentials.Credentials.class,
-                            Jenkins.instance,
-                            null,
-                            null
-                        ).find { it.id == credsId }
-
-                        if (existingCreds) {
-                            existingCreds.secret = new hudson.util.Secret.fromString(\$kubeConfigContent)
-                        } else {
-                            def newCreds = new org.jenkinsci.plugins.plaincredentials.impl.StringCredentialsImpl(
-                                CredentialsScope.GLOBAL,
-                                credsId,
-                                credsDescription,
-                                new hudson.util.Secret.fromString(\$kubeConfigContent)
-                            )
-                            com.cloudbees.plugins.credentials.CredentialsProvider.lookupStores(Jenkins.instance).iterator().next().addCredentials(Domain.global(), newCreds)
-                        }
-                    """
-
-                    // Execute the Groovy script within Jenkins
-                    def groovyScript = createOrUpdateCredentials.replace("\$kubeConfigContent", kubeConfigContent.escapeJava())
-                    Jenkins.instance.doScript(groovyScript)
+                    input message: '''
+                    before proceed please add to cred == kube2== the kubeconfig file and create ns "monitoring"...
+                    ''', ok: 'Proceed'
                 }
             }
         }
