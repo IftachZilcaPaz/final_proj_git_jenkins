@@ -77,7 +77,6 @@ pipeline {
                         echo "Deployment does not exist."
                         env.DEPLOYMENT_EXISTS = 'false'
                     }
-                    }
                 }
             }
         }
@@ -107,6 +106,7 @@ pipeline {
                     }
                 }
             }
+    }
 
     post {
         always {
