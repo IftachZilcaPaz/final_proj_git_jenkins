@@ -42,11 +42,12 @@ pipeline {
                 script {
                     // Check if the Kind cluster already exists
                     def existingClusters = sh(script: "kind get clusters", returnStdout: true).trim()
-                    echo "$existingClusters"
+                        echo "$existingClusters"
                     if (existingClusters == "monitoring") {
-                    echo "Cluster 'monitoring' exists. Count is 100."
+                        echo "Cluster 'monitoring' exists."
                     }else if (existingClusters.isEmpty()) {
-                        echo "empty"
+                        echo "Cluster 'monitoring' does not exists."
+                        echo "createing...."
                         sh "kind create cluster --name ${env.CLUSTER_NAME} --image kindest/node:v1.23.6 --config /home/ubuntu/Prometheus.lesson/kind.yaml"
 
                     }
@@ -59,7 +60,8 @@ pipeline {
                 script {
                     // This will pause the execution and wait for user input
                     input message: '''
-                    before proceed please add to cred == kube2== the kubeconfig file and create ns "monitoring"...
+                        before proceed please add to cred ==> kube2 <== in credential the kubeconfig file,
+                            and then create ns "monitoring" or check if already exists...
                     ''', ok: 'Proceed'
                 }
             }
@@ -100,8 +102,8 @@ pipeline {
                 steps {
                     script {
                         // Starting port-forward in the background
-                        sh "sleep 10"
-                        sh "kubectl -n jenkins port-forward svc/myhtmlapp-service 4000:80 --address='0.0.0.0' &"
+                            sh "sleep 10"
+                            sh "kubectl -n jenkins port-forward svc/myhtmlapp-service 4000:80 --address='0.0.0.0' &"
                         // Store the background job's PID to stop it later
                         // sh "echo \$! > port-forward.pid"
                         try {
@@ -110,7 +112,8 @@ pipeline {
                         // that communicate with the service through the forwarded port
                         } finally {
                         // Kill the port-forward process
-                        sh "sleep 40"
+                            echo "Web will be able 40 sec from now then kill..."
+                            sh "sleep 40"
                     }
                     }
                 }
