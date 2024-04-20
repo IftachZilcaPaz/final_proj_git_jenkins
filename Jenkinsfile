@@ -53,6 +53,15 @@ pipeline {
             }
         }
 
+        stage('Manual Approval') {
+            steps {
+                script {
+                    // This will pause the execution and wait for user input
+                    input message: 'Do you want to proceed?', ok: 'Proceed'
+                }
+            }
+        }
+
         stage('Deploy to Kubernetes') {
             steps {
                 script {
