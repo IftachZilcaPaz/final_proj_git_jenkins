@@ -104,6 +104,15 @@ pipeline {
                         sh "kubectl -n jenkins port-forward svc/myhtmlapp-service 4000:80 --address='0.0.0.0' &"
                         // Store the background job's PID to stop it later
                         sh "echo \$! > port-forward.pid"
+                        try {
+                        // Use port-forward here, for example by running some tests
+                        sh "kubectl -n jenkins port-forward svc/myhtmlapp-service 4000:80 --address='0.0.0.0' &"
+                        // that communicate with the service through the forwarded port
+                        } finally {
+                        // Kill the port-forward process
+                        sh "kill \$(cat port_forward_pid)"
+                        sh "rm -f port_forward_pid"
+                    }
                     }
                 }
             }
