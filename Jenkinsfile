@@ -100,6 +100,7 @@ pipeline {
                 steps {
                     script {
                         // Starting port-forward in the background
+                        sh "sleep 10"
                         sh "kubectl -n jenkins port-forward svc/myhtmlapp-service 4000:80 --address='0.0.0.0' &"
                         // Store the background job's PID to stop it later
                         sh "echo \$! > port-forward.pid"
