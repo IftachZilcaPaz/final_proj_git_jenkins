@@ -63,16 +63,42 @@ pipeline {
                 }
             }
         }
-    
 
-        stage('Deploy to Kubernetes') {
+        stage('Check Deployment') {
             steps {
                 script {
-                    kubernetesDeploy configs: 'deployment.yaml', kubeconfigId: 'kube2'
+                    // Check if the deployment already exists
+                    def deploymentExists = sh(script: "kubectl get deployment myhtmlapp -n jenkins", returnStatus: true)
+                    if (deploymentExists == 0) {
+                        echo "Deployment already exists. Skipping deployment step."
+                    } else {
+                        echo "Deployment does not exist. Proceeding with deployment."
+                        // Add deployment logic here
+                    }
                 }
             }
         }
-    }
+
+        stage('Deploy to Kubernetes') {
+                steps {
+                    script {
+                        kubernetesDeploy configs: 'deployment.yaml', kubeconfigId: 'kube2'
+                    }
+                }
+            }
+        }
+
+
+        stage('Start Port-Forward') {
+                steps {
+                    script {
+                        // Starting port-forward in the background
+                        sh "kubectl -n jenkins port-forward svc/myhtmlapp-service 4000:80 --address='0.0.0.0' &"
+                        // Store the background job's PID to stop it later
+                        sh "echo \$! > port-forward.pid"
+                    }
+                }
+            }
 
     post {
         always {
