@@ -44,11 +44,13 @@ pipeline {
                     echo "$existingClusters"
                     if (existingClusters == "monitoring") {
                     echo "Cluster 'monitoring' exists. Count is 100."
-                }else if (existingClusters.isEmpty()) {
-                echo "empty"
+                    }else if (existingClusters.isEmpty()) {
+                        echo "empty"
+                        sh "kind create cluster --name ${env.CLUSTER_NAME} --image kindest/node:v1.23.6 --config /home/ubuntu/Prometheus.lesson/kind.yaml"
+
                     }
+                }
             }
-        }
         }
 
         stage('Deploy to Kubernetes') {
