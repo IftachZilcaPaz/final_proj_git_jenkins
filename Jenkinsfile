@@ -42,9 +42,11 @@ pipeline {
                     // Check if the Kind cluster already exists
                     def existingClusters = sh(script: "kind get clusters", returnStdout: true).trim()
                     echo "$existingClusters"
-                    sh "if[[ existingClusters == "monitoring"]] then echo 'Count is 100'"
+                    if (existingClusters == "monitoring") {
+                    echo "Cluster 'monitoring' exists. Count is 100."
                 }
             }
+        }
         }
 
         stage('Deploy to Kubernetes') {
