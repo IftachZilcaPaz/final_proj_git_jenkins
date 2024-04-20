@@ -111,7 +111,6 @@ pipeline {
                         } finally {
                         // Kill the port-forward process
                         sh "sleep 40"
-                        sh "sudo lsof -i :4000"
                     }
                     }
                 }
