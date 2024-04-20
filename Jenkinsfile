@@ -44,7 +44,9 @@ pipeline {
                     echo "$existingClusters"
                     if (existingClusters == "monitoring") {
                     echo "Cluster 'monitoring' exists. Count is 100."
-                }
+                }else if (existingClusters.isEmpty()) {
+                echo "empty"
+                    }
             }
         }
         }
