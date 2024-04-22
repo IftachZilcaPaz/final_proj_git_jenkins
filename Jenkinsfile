@@ -10,6 +10,7 @@ pipeline {
         SERVICE_NAME = 'myhtmlapp-service' 
         DEPLOYMENT_EXISTS = 'false'
         HTML_FILE = 'index.html'
+        NAMESPACE = 'jenkins'
     }
 
     stages {
