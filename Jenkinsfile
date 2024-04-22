@@ -88,6 +88,20 @@ pipeline {
             }
         }
 
+        stage('Deploy to Kubernetes') {
+            when {
+                expression { env.DEPLOYMENT_EXISTS == 'false' }
+            }
+            steps {
+                script {
+                    // Deployment logic here
+                    echo "Deploying application..."
+                    kubernetesDeploy configs: 'deployment.yaml', kubeconfigId: 'kube2'
+                    // Add your kubectl apply or helm upgrade command here
+                }
+            }
+        }
+
         stage('Check HTML Change') {
             steps {
                 script {
@@ -102,23 +116,12 @@ pipeline {
                         // Command to delete Kubernetes deployment
                         sh "kubectl delete deployment.apps/${env.DEPLOYMENT_NAME} -n jenkins"
                         sh "kubectl delete service/${env.SERVICE_NAME} -n jenkins"
+                        sh "sleep 10"
+                        echo "Deploying application..."
+                        kubernetesDeploy configs: 'deployment.yaml', kubeconfigId: 'kube2'    
                     } else {
                         echo "HTML file has not changed. No action taken."
                     }
-                }
-            }
-        }
-
-        stage('Deploy to Kubernetes') {
-            when {
-                expression { env.DEPLOYMENT_EXISTS == 'false' }
-            }
-            steps {
-                script {
-                    // Deployment logic here
-                    echo "Deploying application..."
-                    kubernetesDeploy configs: 'deployment.yaml', kubeconfigId: 'kube2'
-                    // Add your kubectl apply or helm upgrade command here
                 }
             }
         }
