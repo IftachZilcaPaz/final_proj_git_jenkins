@@ -5,7 +5,7 @@ pipeline {
         // Define the image name here for reuse in the pipeline
         IMAGE_NAME = "iftachzilka7/myhtmlapp:${env.BUILD_ID}"
         KUBECONFIG = '/home/ubuntu/.kube/config'
-        CLUSTER_NAME = 'monitoring'  /// Define the cluster name here
+        CLUSTER_NAME = 'monitoring'  // Define the cluster name here
         DEPLOYMENT_NAME = 'myhtmlapp'
         SERVICE_NAME = 'myhtmlapp-service' 
         DEPLOYMENT_EXISTS = 'false'
