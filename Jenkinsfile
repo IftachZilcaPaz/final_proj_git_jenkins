@@ -6,7 +6,10 @@ pipeline {
         IMAGE_NAME = "iftachzilka7/myhtmlapp:${env.BUILD_ID}"
         KUBECONFIG = '/home/ubuntu/.kube/config'
         CLUSTER_NAME = 'monitoring'  // Define the cluster name here
+        DEPLOYMENT_NAME = 'myhtmlapp'
+        SERVICE_NAME = 'myhtmlapp-service' 
         DEPLOYMENT_EXISTS = 'false'
+        HTML_FILE = 'index.html'
     }
 
     stages {
@@ -75,9 +78,31 @@ pipeline {
                     if (deploymentExists == 0) {
                         echo "Deployment already exists."
                         env.DEPLOYMENT_EXISTS = 'true'
+                        //sh "kubectl delete deployment.apps/${env.DEPLOYMENT_NAME} -n jenkins"
+                        //sh "kubectl delete service/${env.SERVICE_NAME} -n jenkins"
                     } else {
                         echo "Deployment does not exist."
                         env.DEPLOYMENT_EXISTS = 'false'
+                    }
+                }
+            }
+        }
+
+        stage('Check HTML Change') {
+            steps {
+                script {
+                    // Get changes since last build
+                    def changedFiles = sh(
+                        script: "git diff HEAD^ HEAD --name-only",
+                        returnStdout: true
+                    ).trim()
+                    // Check if the specific HTML file is in the list of changed files
+                    if (changedFiles.contains(env.HTML_FILE)) {
+                        echo "HTML file has changed. Deleting deployment..."
+                        // Command to delete Kubernetes deployment
+                        sh "kubectl delete deployment ${env.DEPLOYMENT_NAME} -n ${env.NAMESPACE}"
+                    } else {
+                        echo "HTML file has not changed. No action taken."
                     }
                 }
             }
