@@ -74,15 +74,13 @@ pipeline {
             steps {
                 script {
                     // Check if the deployment already exists
-                    def deploymentExists = sh(script: "kubectl get deployment myhtmlapp -n jenkins", returnStatus: true)
+                    def deploymentExists = sh(script: "kubectl get deployment ${env.DEPLOYMENT_NAME} -n ${env.NAMESPACE}", returnStatus: true)
                     if (deploymentExists == 0) {
                         echo "Deployment already exists."
-                        env.DEPLOYMENT_EXISTS = 'true'
-                        //sh "kubectl delete deployment.apps/${env.DEPLOYMENT_NAME} -n jenkins"
-                        //sh "kubectl delete service/${env.SERVICE_NAME} -n jenkins"
+                        writeFile file: 'deploymentExists.txt', text: 'true'
                     } else {
                         echo "Deployment does not exist."
-                        env.DEPLOYMENT_EXISTS = 'false'
+                        writeFile file: 'deploymentExists.txt', text: 'false'
                     }
                 }
             }
@@ -90,14 +88,12 @@ pipeline {
 
         stage('Deploy to Kubernetes') {
             when {
-                expression { env.DEPLOYMENT_EXISTS == 'false' }
+                expression { readFile('deploymentExists.txt').trim() == 'false' }
             }
             steps {
                 script {
-                    // Deployment logic here
                     echo "Deploying application..."
                     kubernetesDeploy configs: 'deployment.yaml', kubeconfigId: 'kube2'
-                    // Add your kubectl apply or helm upgrade command here
                 }
             }
         }
