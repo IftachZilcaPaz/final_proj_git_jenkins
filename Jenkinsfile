@@ -100,7 +100,8 @@ pipeline {
                     if (changedFiles.contains(env.HTML_FILE)) {
                         echo "HTML file has changed. Deleting deployment..."
                         // Command to delete Kubernetes deployment
-                        sh "kubectl delete deployment ${env.DEPLOYMENT_NAME} -n ${env.NAMESPACE}"
+                        sh "kubectl delete deployment.apps/${env.DEPLOYMENT_NAME} -n jenkins"
+                        sh "kubectl delete service/${env.SERVICE_NAME} -n jenkins"
                     } else {
                         echo "HTML file has not changed. No action taken."
                     }
