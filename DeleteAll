@@ -1,0 +1,34 @@
+pipeline {
+    agent any
+    
+    environment {
+        KUBECONFIG_ID = 'kube2'
+        KUBECONFIG = "${WORKSPACE}/.kube/config"
+    }
+    
+    stages {
+        stage('Delete Kubernetes Resources') {
+            steps {
+                script{
+                    withKubeConfig(credentialsId: 'kube2') {
+                        sh 'kubectl get pods'
+                    }
+                }
+                }
+            }
+        stage('Shutdown Ubuntu Host') {
+            steps {
+                script {
+                    // Replace 'username' with your SSH username and 'host_ip' with the Ubuntu host IP address.
+                    // You will need to set up passwordless SSH or use credentials stored in Jenkins.
+                    sh 'echo'
+                }
+            }
+        }
+    }
+    post {
+        always {
+            cleanWs()
+        }
+    }
+}
