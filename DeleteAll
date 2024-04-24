@@ -1,17 +1,24 @@
 pipeline {
     agent any
     
-    environment {
-        KUBECONFIG_ID = 'kube2'
-        KUBECONFIG = "${WORKSPACE}/.kube/config"
+      environment {
+        // Define the image name here for reuse in the pipeline
+        IMAGE_NAME = "iftachzilka7/myhtmlapp:${env.BUILD_ID}"
+        KUBECONFIG = '/home/ubuntu/.kube/config'
+        CLUSTER_NAME = 'monitoring'  // Define the cluster name here
+        DEPLOYMENT_NAME = 'myhtmlapp'
+        SERVICE_NAME = 'myhtmlapp-service' 
+        DEPLOYMENT_EXISTS = 'false'
+        HTML_FILE = 'index.html'
+        NAMESPACE = 'jenkins'
     }
     
     stages {
         stage('Delete Kubernetes Resources') {
             steps {
                 script{
-                    withKubeConfig(credentialsId: 'kube2') {
-                        sh 'kubectl get pods'
+                    sh "kubectl delete deployment.apps/${env.DEPLOYMENT_NAME} -n jenkins"
+                    sh "kubectl delete service/${env.SERVICE_NAME} -n jenkins"
                     }
                 }
                 }
