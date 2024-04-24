@@ -21,7 +21,6 @@ pipeline {
                     sh "kubectl delete service/${env.SERVICE_NAME} -n jenkins"
                     }
                 }
-                }
             }
         stage('Shutdown Ubuntu Host') {
             steps {
