@@ -27,7 +27,7 @@ pipeline {
                 script {
                     // Replace 'username' with your SSH username and 'host_ip' with the Ubuntu host IP address.
                     // You will need to set up passwordless SSH or use credentials stored in Jenkins.
-                    sh 'echo'
+                    sh "shutdown now"
                 }
             }
         }
