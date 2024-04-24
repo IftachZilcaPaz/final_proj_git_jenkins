@@ -16,7 +16,23 @@
 
 ---
 
+&nbsp;
+&nbsp;
+&nbsp;
+&nbsp;
 
+<p>
+<h2> instruction for jenkins: &nbsp;=)</h1>
+<br/>
+<h4>click on "Build With Parameters"</h4>
+<br/>
+<img width="603" alt="image" src="https://github.com/IftachZilcaPaz/final_proj_git_jenkins/assets/151572520/97f8fad0-9c9a-4497-a446-8926e47470f5">
+<br/>
+<h4> then insert your branch name and click on "build" </h4>
+<br/>
+<img width="1061" alt="image" src="https://github.com/IftachZilcaPaz/final_proj_git_jenkins/assets/151572520/de80dee1-f66c-4171-a1f7-f253aebdb22f">
+</p>
+<br/>
 
 
 
