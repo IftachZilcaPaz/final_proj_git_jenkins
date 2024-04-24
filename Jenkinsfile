@@ -17,7 +17,7 @@ pipeline {
 
         stage('Checkout') {
             steps {
-                git branch: '$BRANCH_NAME', 
+                git branch: '$BRANCH_NAME', // this name or inside jenkins job config under "This project is parameterized" in General section
                     credentialsId: 'Jenkins_git', 
                     url: 'https://github.com/IftachZilcaPaz/final_proj_git_jenkins.git'
             }
