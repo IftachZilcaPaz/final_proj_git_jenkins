@@ -14,20 +14,27 @@ pipeline {
     }
     
     stages {
-        stage('Delete Kubernetes Resources') {
+        stage('Check Deployment') {
             steps {
-                script{
-                    sh "kubectl delete deployment.apps/${env.DEPLOYMENT_NAME} -n jenkins"
-                    sh "kubectl delete service/${env.SERVICE_NAME} -n jenkins"
+                script {
+                    // Check if the deployment already exists
+                    def deploymentExists = sh(script: "kubectl get deployment ${env.DEPLOYMENT_NAME} -n ${env.NAMESPACE}", returnStatus: true)
+                    if (deploymentExists == 0) {
+                        echo "Deployment already exists."
+                        sh "kubectl delete deployment.apps/${env.DEPLOYMENT_NAME} -n jenkins"
+                        sh "kubectl delete service/${env.SERVICE_NAME} -n jenkins"
+                    } else {
+                        echo "Deployment does not exist."
                     }
                 }
             }
+        }
         stage('Shutdown Ubuntu Host') {
             steps {
                 script {
                     // Replace 'username' with your SSH username and 'host_ip' with the Ubuntu host IP address.
                     // You will need to set up passwordless SSH or use credentials stored in Jenkins.
-                    sh "shutdown now"
+                    sh 'sudo shutdown now'
                 }
             }
         }
