@@ -34,10 +34,36 @@
 </p>
 <br/>
 
+```mermaid
+flowchart LR
+    subgraph GitHub
+        direction TB
+        A(Pushing Code To Repo)
+    end
+    subgraph Jenkins
+        direction TB
+        B(Trigger Jenkins Automation) --> C(Pulling to code from github repo)
+    end
+    subgraph DockerHub
+        direction TB
+        D(Uploading_image_to_DockerHub) --> E(Creating_Docker_image_from_code)
+    end
+    subgraph K8S
+        direction TB
+        F(Creating_a_deployment_to_check_employee_code)
+    end
+    %% ^ These subgraphs are identical, except for the links to them:
 
-
-
-
-
+    %% Link *to* subgraph1: subgraph1 direction is maintained
+    
+    id1(((Devops Engineer))) --> GitHub
+    GitHub --> Jenkins
+    Jenkins --> DockerHub
+    DockerHub --> K8S
+    K8S --> id2(((Final Step)))
+    %% Link *within* subgraph2:
+    %% subgraph2 inherits the direction of the top-level graph (LR)
+    %% outside ---> top2
+```
 
   
