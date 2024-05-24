@@ -21,98 +21,89 @@
 &nbsp;
 &nbsp;
 
-<p>
-<h2> ###   Instruction For Jenkins To Run New Job  ###&nbsp;</h1>
-<br/>
-<h4>first step:</h4>
-in jenkins go to:
+# Instruction For Jenkins To Run New Job
 
-Dashboard > Manage Jenkins > Plugin Manager
+## Table of Contents
+1. [Step 1: Install Required Plugins](#step-1-install-required-plugins)
+2. [Step 2: Create Docker Hub and Kubernetes Credentials](#step-2-create-docker-hub-and-kubernetes-credentials)
+3. [Step 3: Update Jenkinsfile](#step-3-update-jenkinsfile)
+4. [Step 4: Run the Pipeline](#step-4-run-the-pipeline)
+5. [Pipeline Diagram](#pipeline-diagram)
 
-and install these plugins:
+## Step 1: Install Required Plugins
 
-- GitHub, GitHub API Plugin, GitHub Branch Source, GitHub Pull Request Builder, Pipeline: GitHub Groovy Librarie.
-- Docker, Docker API Plugin, Docker Commons Plugin, Docker Pipeline.
-- Kubernetes, 'Kubernetes :: Pipeline :: DevOps Steps', Kubernetes CLI Plugin, Kubernetes Client API Plugin, Kubernetes Continuous Deploy Plugin, Kubernetes Credentials,Kubernetes Credentials Provider.
+In Jenkins, go to:
 
-<h4>next step:</h4>
-create docker hub and k8s credentials.
+**Dashboard > Manage Jenkins > Plugin Manager**
 
-in jenkins:
+Install the following plugins:
 
-Dashboard > Manage Jenkins > Credentials.
+- **GitHub Plugins**: GitHub, GitHub API Plugin, GitHub Branch Source, GitHub Pull Request Builder, Pipeline: GitHub Groovy Libraries.
+- **Docker Plugins**: Docker, Docker API Plugin, Docker Commons Plugin, Docker Pipeline.
+- **Kubernetes Plugins**: Kubernetes, 'Kubernetes :: Pipeline :: DevOps Steps', Kubernetes CLI Plugin, Kubernetes Client API Plugin, Kubernetes Continuous Deploy Plugin, Kubernetes Credentials, Kubernetes Credentials Provider.
 
-click on "global" and the on "add cred" as in the picture :
+## Step 2: Create Docker Hub and Kubernetes Credentials
 
-<img width="663" alt="image" src="https://github.com/IftachZilcaPaz/final_proj_git_jenkins/assets/151572520/84c8b591-f437-47e4-a80a-e758e5b2f5e8">
+In Jenkins, go to:
 
+**Dashboard > Manage Jenkins > Credentials**
 
-then you will see that, this is the type to create docker hub username and password:
+Click on "Global" and then "Add Credentials" as shown in the image below:
 
-<img width="1324" alt="image" src="https://github.com/IftachZilcaPaz/final_proj_git_jenkins/assets/151572520/751f092d-24ba-4a27-b326-329488227027">
+![Add Credentials](https://github.com/IftachZilcaPaz/final_proj_git_jenkins/assets/151572520/84c8b591-f437-47e4-a80a-e758e5b2f5e8)
 
-insert all the fields, username and password that you connect with it to "DOCKERHUB"
-then give id name like "dockerhub" and description.
+For Docker Hub, select the type for username and password credentials and fill in the required fields:
 
+![Docker Hub Credentials](https://github.com/IftachZilcaPaz/final_proj_git_jenkins/assets/151572520/751f092d-24ba-4a27-b326-329488227027)
 
-<h4>next step:</h4>
+- **Username**: Your Docker Hub username
+- **Password**: Your Docker Hub password
+- **ID**: dockerhub
+- **Description**: Docker Hub credentials
 
-in my Jenkinsfile i have the first lines:
+## Step 3: Update Jenkinsfile
 
-<img width="562" alt="image" src="https://github.com/IftachZilcaPaz/final_proj_git_jenkins/assets/151572520/a346c4d4-bbe3-4576-9f6b-d8b98e08d52f">
+In your Jenkinsfile, update the following lines:
 
-change:
-- IMAGE_NAME contnet to your user name and repo
-- KUBECONFIG to the path of .kube in your master
-- if you want to u can change also > CLUSTER_NAME, NAMESPACE as u wish, but need to change it in more places in the code.
+![Jenkinsfile Configuration](https://github.com/IftachZilcaPaz/final_proj_git_jenkins/assets/151572520/a346c4d4-bbe3-4576-9f6b-d8b98e08d52f)
 
-<h4>next step:</h4>
+- **IMAGE_NAME**: Your Docker Hub username and repository name
+- **KUBECONFIG**: Path to the .kube directory on your master node
 
-run the pipeline, my example of pipeline it will build all even the cluster.
+Optional: Update **CLUSTER_NAME** and **NAMESPACE** as needed, but ensure consistency throughout the code.
 
-  to run need you will see in the main page in jenkins in left side "build with parameter"
-  
-  <img width="577" alt="image" src="https://github.com/IftachZilcaPaz/final_proj_git_jenkins/assets/151572520/bbd7bd64-45d0-4717-b01a-289f7bb6917b">
-  
-  what thet it means actually is to run with specific branch, why is it good? cuz we dont want any time to run main branch, do you test in custom branch run the pipeline with the code of this costum branch and if all is good merge it into main and then run again and check.
-  
-  when you will click on "build with parameter" you will see:
-  
-  <img width="1061" alt="image" src="https://github.com/IftachZilcaPaz/final_proj_git_jenkins/assets/151572520/de80dee1-f66c-4171-a1f7-f253aebdb22f">
-  
-  change to you branch name.
+## Step 4: Run the Pipeline
 
+To run the pipeline, go to the main Jenkins page and click "Build with Parameters" on the left side:
 
-- first stage will connect to your branch in the repo
-- next stage "Build Docker Image"
-- next "Push Image" to your repo this stage will use your dockerhub cred that created prev
-- next "Check and Create Kind Cluster" will check if cluster not already exists and create one
-- next "Manual Approval" will wait to your approval, before approve do those steps:
+![Build with Parameters](https://github.com/IftachZilcaPaz/final_proj_git_jenkins/assets/151572520/bbd7bd64-45d0-4717-b01a-289f7bb6917b)
 
-    back to "Credentials" and click again on global, and now we will add one for k8s, and keep attention to the type
-    (note!! if you dont see kubeconfig type as picture check again that you installed all the plugins above):
-    <img width="1310" alt="image" src="https://github.com/IftachZilcaPaz/final_proj_git_jenkins/assets/151572520/4b20eec6-1685-4f4b-9fc9-f22dcdfc6d82">
-    
-    - put id and description
-    - in your k8s cluster go to master node
-    - then nevigate to ~/.kube dir and copy your content of config file
-    - paste the content in jenkins cred in the section "kubeconfig", click on the radio button "enter directly" and past it there.
-    - then in you cluster create "namespace" called jenkins.
-    - then approve the stage and continue
- 
-- next "Check Deployment" it will check if its exists
-- next "Deploy to Kubernetes" will deploy
-- next "Check HTML Change" it will check if there is a changes on the html file and only if there is it will deploy it again.
-- next "Start Port Forward" this stage will start the access to use the website.
+Select the desired branch to test before merging into the main branch:
 
----
+![Branch Selection](https://github.com/IftachZilcaPaz/final_proj_git_jenkins/assets/151572520/de80dee1-f66c-4171-a1f7-f253aebdb22f)
 
-&nbsp;
-&nbsp;
-&nbsp;
-&nbsp;
+The pipeline stages include:
 
-this is the diagram of the stages and proceeses:
+1. **Connect to Branch**: Connects to your selected branch in the repository.
+2. **Build Docker Image**: Builds the Docker image.
+3. **Push Image**: Pushes the image to your Docker Hub repository using the previously created credentials.
+4. **Check and Create Kind Cluster**: Checks if the cluster exists and creates one if necessary.
+5. **Manual Approval**: Waits for your approval before proceeding. Follow these steps:
+   - Add Kubernetes credentials by navigating to **Credentials > Global** and selecting the kubeconfig type:
+   
+     ![Kubernetes Credentials](https://github.com/IftachZilcaPaz/final_proj_git_jenkins/assets/151572520/4b20eec6-1685-4f4b-9fc9-f22dcdfc6d82)
+   
+   - Paste the content of your kubeconfig file from the master node's ~/.kube directory.
+   - Create a namespace called jenkins in your cluster.
+   - Approve the stage to continue.
+6. **Check Deployment**: Checks if the deployment exists.
+7. **Deploy to Kubernetes**: Deploys the application to Kubernetes.
+8. **Check HTML Change**: Checks for changes in the HTML file and redeploys if necessary.
+9. **Start Port Forward**: Starts port forwarding to access the website.
+
+## Pipeline Diagram
+
+The following diagram illustrates the stages and processes:
 
 ```mermaid
 flowchart LR
@@ -145,5 +136,6 @@ flowchart LR
     %% subgraph2 inherits the direction of the top-level graph (LR)
     %% outside ---> top2
 ```
+
 
   
