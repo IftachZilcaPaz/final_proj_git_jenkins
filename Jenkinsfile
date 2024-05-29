@@ -22,7 +22,48 @@ pipeline {
                     url: 'https://github.com/IftachZilcaPaz/final_proj_git_jenkins.git'
             }
         }
+        stage('Check and Install Docker') {
+            steps {
+                script {
+                    // Check if Docker is installed
+                    def dockerExists = sh(script: 'command -v docker', returnStatus: true) == 0
 
+                    if (!dockerExists) {
+                        echo 'Docker not found, installing...'
+
+                        // Define the script to check and install Docker
+                        def installDockerScript = '''
+                        #!/bin/bash
+
+                        # Update package list
+                        sudo apt update
+
+                        # Install Docker
+                        sudo apt install docker.io -y
+
+                        # Start Docker service
+                        sudo systemctl start docker
+
+                        # Enable Docker to start on boot
+                        sudo systemctl enable docker
+
+                        echo "Docker installed successfully."
+                        '''
+
+                        // Write the script to a temporary file
+                        writeFile file: 'install_docker.sh', text: installDockerScript
+
+                        // Make the script executable
+                        sh 'chmod +x install_docker.sh'
+
+                        // Run the script
+                        sh './install_docker.sh'
+                    } else {
+                        echo 'Docker is already installed.'
+                    }
+                }
+            }
+        }
         stage('Build Docker Image') {
             steps {
                 script {
