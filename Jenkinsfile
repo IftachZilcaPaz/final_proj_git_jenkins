@@ -64,6 +64,45 @@ pipeline {
                 }
             }
         }
+        stage('Check and Install Kind') {
+            steps {
+                script {
+                    // Check if kind is installed
+                    def kindExists = sh(script: 'command -v kind', returnStatus: true) == 0
+
+                    if (!kindExists) {
+                        echo 'Kind not found, installing...'
+
+                        // Define the script to install Kind
+                        def installKindScript = '''
+                        #!/bin/bash
+
+                        # Download the kind binary
+                        curl -Lo ./kind https://kind.sigs.k8s.io/dl/latest/kind-linux-amd64
+
+                        # Make the kind binary executable
+                        chmod +x ./kind
+
+                        # Move the kind binary to a directory in the PATH
+                        sudo mv ./kind /usr/local/bin/kind
+
+                        echo "Kind installed successfully."
+                        '''
+
+                        // Write the script to a temporary file
+                        writeFile file: 'install_kind.sh', text: installKindScript
+
+                        // Make the script executable
+                        sh 'chmod +x install_kind.sh'
+
+                        // Run the script
+                        sh './install_kind.sh'
+                    } else {
+                        echo 'Kind is already installed.'
+                    }
+                }
+            }
+        }
         stage('Build Docker Image') {
             steps {
                 script {
