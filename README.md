@@ -69,7 +69,7 @@ flowchart LR
     
     id1(((Devops Engineer))) --> GitHub
     GitHub --> Jenkins
-    Jenkins --> DockerHub
+    Jenkins --> Docker
     Docker --> K8S
     K8S --> id2(((Final Step)))
     %% Link *within* subgraph2:
