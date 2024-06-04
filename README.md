@@ -51,7 +51,7 @@ flowchart LR
         direction TB
         B(Trigger Jenkins Automation) --> C(Pulling to code from github repo)
     end
-    subgraph DockerHub
+    subgraph Docker
         direction TB
         D(Check and Install Docker) --> E(Check and Install Kind)
         F(Build Docker Image) --> G(Push Image)
