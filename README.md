@@ -70,7 +70,7 @@ flowchart LR
     id1(((Devops Engineer))) --> GitHub
     GitHub --> Jenkins
     Jenkins --> DockerHub
-    DockerHub --> K8S
+    Docker --> K8S
     K8S --> id2(((Final Step)))
     %% Link *within* subgraph2:
     %% subgraph2 inherits the direction of the top-level graph (LR)
