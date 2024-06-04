@@ -109,7 +109,8 @@ The following diagram illustrates the stages and processes:
 flowchart LR
     subgraph GitHub
         direction TB
-        A(Pushing Code To Repo)
+        A(Checkout to specific branch)
+        A(Start Port Forward)
     end
     subgraph Jenkins
         direction TB
@@ -117,11 +118,15 @@ flowchart LR
     end
     subgraph DockerHub
         direction TB
-        D(Uploading_image_to_DockerHub) --> E(Creating_Docker_image_from_code)
+        D(Check and Install Docker) --> E(Check and Install Kind)
+        F(Build Docker Image) --> G(Push Image)
     end
     subgraph K8S
         direction TB
-        F(Creating_a_deployment_to_check_employee_code)
+        H(Check and Create Kind Cluster) --> I(Check Deployment)
+        I(Check Deployment) --> J(Deploy to Kubernetes)
+        J(Deploy to Kubernetes) --> K(Creating_a_deployment_to_check_employee_code)
+        K(Creating_a_deployment_to_check_employee_code) --> L(Check HTML Change)
     end
     %% ^ These subgraphs are identical, except for the links to them:
 
