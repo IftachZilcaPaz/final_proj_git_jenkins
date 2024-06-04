@@ -21,14 +21,61 @@
 &nbsp;
 &nbsp;
 
+
+
 # Instruction For Jenkins To Run New Job
 
 ## Table of Contents
-1. [Step 1: Install Required Plugins](#step-1-install-required-plugins)
-2. [Step 2: Create Docker Hub and Kubernetes Credentials](#step-2-create-docker-hub-and-kubernetes-credentials)
-3. [Step 3: Update Jenkinsfile](#step-3-update-jenkinsfile)
-4. [Step 4: Run the Pipeline](#step-4-run-the-pipeline)
-5. [Pipeline Diagram](#pipeline-diagram)
+1. [Pipeline Diagram](#pipeline-diagram)
+2. [Step 1: Install Required Plugins](#step-1-install-required-plugins)
+3. [Step 2: Create Docker Hub and Kubernetes Credentials](#step-2-create-docker-hub-and-kubernetes-credentials)
+4. [Step 3: Update Jenkinsfile](#step-3-update-jenkinsfile)
+5. [Step 4: Run the Pipeline](#step-4-run-the-pipeline)
+
+&nbsp;
+&nbsp;
+----
+## Pipeline Diagram
+
+The following diagram illustrates the stages and processes:
+
+
+```mermaid
+flowchart LR
+    subgraph GitHub
+        direction TB
+        A(Checkout to specific branch)
+        A(Start Port Forward)
+    end
+    subgraph Jenkins
+        direction TB
+        B(Trigger Jenkins Automation) --> C(Pulling to code from github repo)
+    end
+    subgraph DockerHub
+        direction TB
+        D(Check and Install Docker) --> E(Check and Install Kind)
+        F(Build Docker Image) --> G(Push Image)
+    end
+    subgraph K8S
+        direction TB
+        H(Check and Create Kind Cluster) --> I(Check Deployment)
+        I(Check Deployment) --> J(Deploy to Kubernetes)
+        J(Deploy to Kubernetes) --> K(Creating_a_deployment_to_check_employee_code)
+        K(Creating_a_deployment_to_check_employee_code) --> L(Check HTML Change)
+    end
+    %% ^ These subgraphs are identical, except for the links to them:
+
+    %% Link *to* subgraph1: subgraph1 direction is maintained
+    
+    id1(((Devops Engineer))) --> GitHub
+    GitHub --> Jenkins
+    Jenkins --> DockerHub
+    DockerHub --> K8S
+    K8S --> id2(((Final Step)))
+    %% Link *within* subgraph2:
+    %% subgraph2 inherits the direction of the top-level graph (LR)
+    %% outside ---> top2
+```
 
 ## Step 1: Install Required Plugins
 
@@ -100,47 +147,6 @@ The pipeline stages include:
 7. **Deploy to Kubernetes**: Deploys the application to Kubernetes.
 8. **Check HTML Change**: Checks for changes in the HTML file and redeploys if necessary.
 9. **Start Port Forward**: Starts port forwarding to access the website.
-
-## Pipeline Diagram
-
-The following diagram illustrates the stages and processes:
-
-```mermaid
-flowchart LR
-    subgraph GitHub
-        direction TB
-        A(Checkout to specific branch)
-        A(Start Port Forward)
-    end
-    subgraph Jenkins
-        direction TB
-        B(Trigger Jenkins Automation) --> C(Pulling to code from github repo)
-    end
-    subgraph DockerHub
-        direction TB
-        D(Check and Install Docker) --> E(Check and Install Kind)
-        F(Build Docker Image) --> G(Push Image)
-    end
-    subgraph K8S
-        direction TB
-        H(Check and Create Kind Cluster) --> I(Check Deployment)
-        I(Check Deployment) --> J(Deploy to Kubernetes)
-        J(Deploy to Kubernetes) --> K(Creating_a_deployment_to_check_employee_code)
-        K(Creating_a_deployment_to_check_employee_code) --> L(Check HTML Change)
-    end
-    %% ^ These subgraphs are identical, except for the links to them:
-
-    %% Link *to* subgraph1: subgraph1 direction is maintained
-    
-    id1(((Devops Engineer))) --> GitHub
-    GitHub --> Jenkins
-    Jenkins --> DockerHub
-    DockerHub --> K8S
-    K8S --> id2(((Final Step)))
-    %% Link *within* subgraph2:
-    %% subgraph2 inherits the direction of the top-level graph (LR)
-    %% outside ---> top2
-```
 
 
   
